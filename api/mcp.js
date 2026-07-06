@@ -52,9 +52,13 @@ module.exports = async (req, res) => {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
+        'Accept': req.headers['accept'] || 'application/json, text/event-stream',
         'X-API-Key': process.env.DINORANK_API_KEY,
         ...(req.headers['mcp-protocol-version']
           ? { 'MCP-Protocol-Version': req.headers['mcp-protocol-version'] }
+          : {}),
+        ...(req.headers['mcp-session-id']
+          ? { 'Mcp-Session-Id': req.headers['mcp-session-id'] }
           : {}),
       },
       body: JSON.stringify(body),
@@ -63,6 +67,10 @@ module.exports = async (req, res) => {
     const text = await upstream.text();
     res.status(upstream.status);
     res.setHeader('Content-Type', upstream.headers.get('content-type') || 'application/json');
+
+    const sessionId = upstream.headers.get('mcp-session-id');
+    if (sessionId) res.setHeader('Mcp-Session-Id', sessionId);
+
     res.send(text);
   } catch (e) {
     res.status(502).json({ error: 'bad_gateway', error_description: 'No se pudo contactar con DinoRank' });
