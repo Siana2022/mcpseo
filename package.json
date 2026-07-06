@@ -1,0 +1,9 @@
+{
+  "name": "dinorank-mcp-proxy",
+  "version": "1.0.0",
+  "private": true,
+  "description": "Proxy OAuth para conectar el MCP de DinoRank (auth por API key) con el conector personalizado de Claude.ai (que solo soporta OAuth).",
+  "engines": {
+    "node": ">=18"
+  }
+}
